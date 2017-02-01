@@ -11,11 +11,15 @@ namespace Discord.WebSocket
         public static IAsyncEnumerable<IReadOnlyCollection<IMessage>> GetMessagesAsync(ISocketMessageChannel channel, DiscordSocketClient discord, MessageCache messages,
             ulong? fromMessageId, Direction dir, int limit, CacheMode mode, RequestOptions options)
         {
-            if (dir == Direction.Around)
-                throw new NotImplementedException(); //TODO: Impl
-
             IReadOnlyCollection<SocketMessage> cachedMessages = null;
             IAsyncEnumerable<IReadOnlyCollection<IMessage>> result = null;
+
+            if (dir == Direction.Around) //TODO: Impl
+            {
+                if (limit > 100)
+                    throw new NotSupportedException("Direction around does not support a limit above 100");
+                return ChannelHelper.GetMessagesAsync(channel, discord, fromMessageId, dir, limit, options); //Lets just worry about actually calling the API for now
+            }            
             
             if (dir == Direction.After && fromMessageId == null)
                 return AsyncEnumerable.Empty<IReadOnlyCollection<IMessage>>();

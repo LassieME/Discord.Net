@@ -93,8 +93,10 @@ namespace Discord.Rest
         public static IAsyncEnumerable<IReadOnlyCollection<RestMessage>> GetMessagesAsync(IMessageChannel channel, BaseDiscordClient client, 
             ulong? fromMessageId, Direction dir, int limit, RequestOptions options)
         {
-            if (dir == Direction.Around)
-                throw new NotImplementedException(); //TODO: Impl
+            if (dir == Direction.Around)//throw new NotImplementedException(); //TODO: Impl
+                if (limit > 100)
+                    throw new NotSupportedException("Direction around does not support a limit above 101");
+
 
             var guildId = (channel as IGuildChannel)?.GuildId;
             var guild = guildId != null ? (client as IDiscordClient).GetGuildAsync(guildId.Value, CacheMode.CacheOnly).Result : null;
