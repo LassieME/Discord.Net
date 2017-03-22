@@ -25,7 +25,7 @@ namespace Discord.WebSocket
         public Game? Game => _shards[0].Game;
 
         internal new DiscordSocketApiClient ApiClient => base.ApiClient as DiscordSocketApiClient;
-        public new SocketSelfUser CurrentUser { get { return base.CurrentUser as SocketSelfUser; } private set { base.CurrentUser = value; } }
+        public new SocketSelfUser CurrentUser => _shards[0].CurrentUser;
         public IReadOnlyCollection<SocketGuild> Guilds => GetGuilds().ToReadOnlyCollection(() => GetGuildCount());
         public IReadOnlyCollection<ISocketPrivateChannel> PrivateChannels => GetPrivateChannels().ToReadOnlyCollection(() => GetPrivateChannelCount());
         public IReadOnlyCollection<DiscordSocketClient> Shards => _shards;
@@ -101,7 +101,6 @@ namespace Discord.WebSocket
             for (int i = 0; i < _shards.Length; i++)
                 await _shards[i].LogoutAsync();
 
-            CurrentUser = null;
             if (_automaticShards)
             {
                 _shardIds = new int[0];
@@ -306,6 +305,8 @@ namespace Discord.WebSocket
         }
 
         //IDiscordClient
+        ISelfUser IDiscordClient.CurrentUser => CurrentUser;
+        
         async Task<IApplication> IDiscordClient.GetApplicationInfoAsync()
             => await GetApplicationInfoAsync().ConfigureAwait(false);
 
