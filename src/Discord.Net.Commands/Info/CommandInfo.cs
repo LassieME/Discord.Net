@@ -141,8 +141,11 @@ namespace Discord.Commands
                     case RunMode.Sync: //Always sync
                         await ExecuteAsyncInternal(context, args, services).ConfigureAwait(false);
                         break;
+                    case RunMode.Mixed: //Sometimes both
+                        var _ = ExecuteAsyncInternal(context, args, services).ConfigureAwait(false);
+                        break;
                     case RunMode.Async: //Always async
-                        var t2 = Task.Run(async () => 
+                        var __ = Task.Run(async () => 
                         {
                             await ExecuteAsyncInternal(context, args, services).ConfigureAwait(false);
                         });
